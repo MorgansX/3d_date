@@ -1,24 +1,27 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import * as THREE from 'three';
+import {SIZES} from "./constants/dimensions.ts";
+import './style.css';
+import Renderer from "./core/Renderer.ts";
+import Scene from "./core/Scene.ts";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const canvas = document.querySelector('canvas.app') as HTMLCanvasElement;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const scene = Scene.getInstance();
+const geometry = new THREE.BoxGeometry(1, 1, 1)
+const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+const mesh = new THREE.Mesh(geometry, material)
+scene.add(mesh)
+
+
+const camera = new THREE.PerspectiveCamera(75, SIZES.WIDTH/ SIZES.HEIGHT, 0.1, 1000)
+camera.position.z = 5;
+camera.position.x = -3;
+scene.add(camera)
+
+const rendererInstance = Renderer.getInstance(canvas);
+const renderer= rendererInstance.getRenderer();
+renderer.render(scene.getScene(), camera);
+rendererInstance.setupResizeListener(camera,scene.getScene());
+
+
+
