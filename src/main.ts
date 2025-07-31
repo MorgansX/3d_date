@@ -1,82 +1,46 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 import { SIZES } from "./constants/dimensions.ts";
 import Renderer from "./core/Renderer.ts";
 import Scene from "./core/Scene.ts";
-import moment from "moment";
+import { FontLoader } from "three/addons/loaders/FontLoader.js";
+import { updateGradientBackground } from "./utils/updateGradientBackground.ts";
+import { animateBubbles } from "./utils/animateBubbles.ts";
+import { bubbles, renderBubbles } from "./core/renderBubbles.ts";
+import { renderText } from "./core/renderText.ts";
+import createControls from "./core/orbitControlls.ts";
 
-import { FontLoader, Font } from "three/addons/loaders/FontLoader.js";
-import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
+import "./style.css";
 
-import './style.css';
+const canvas = document.querySelector("canvas.app") as HTMLCanvasElement;
 
-const canvas = document.querySelector('canvas.app') as HTMLCanvasElement;
 const rendererInstance = Renderer.getInstance(canvas);
 const renderer = rendererInstance.getRenderer();
-const fontLoader = new FontLoader();
 
-const mouse = {
-    x: 0,
-    y: 0
-};
+const fontLoader = new FontLoader();
 
 const scene = Scene.getInstance();
 
-let textMesh: THREE.Mesh | null = null;
+const camera = new THREE.PerspectiveCamera(
+	75,
+	SIZES.WIDTH / SIZES.HEIGHT,
+	0.1,
+	1000,
+);
+camera.position.z = 5.5;
+scene.add(camera);
 
-const date = moment().format('D MMMM');
+renderText(fontLoader, renderer, scene, camera);
+renderBubbles(scene);
 
-// Added proper type annotation for font parameter
-fontLoader.load('/fonts/rubic_black.json', (font: Font) => {
-    const textGeometry = new TextGeometry(
-        date,
-        {
-            font: font,
-            size: 0.5,
-            depth: 0.2,
-            curveSegments: 12,
-            bevelEnabled: true,
-            bevelThickness: 0.03,
-            bevelSize: 0.02,
-            bevelOffset: 0,
-            bevelSegments: 5
-        }
-    )
-
-    textGeometry.center();
-    const textMaterial = new THREE.MeshMatcapMaterial()
-
-    textMesh = new THREE.Mesh(textGeometry, textMaterial)
-    scene.add(textMesh)
-
-    renderer.render(scene.getScene(), camera);
-})
-
-const camera = new THREE.PerspectiveCamera(75, SIZES.WIDTH / SIZES.HEIGHT, 0.1, 1000)
-camera.position.z = 5;
-scene.add(camera)
-
-window.addEventListener('mousemove', (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-});
+const controls = createControls(camera, canvas);
 
 const animate = () => {
-    requestAnimationFrame(animate);
-
-    if (textMesh) {
-        const maxRotationX = Math.PI * 0.1;
-        const maxRotationY = Math.PI * 0.1;
-
-        const targetRotationX = mouse.y * maxRotationX;
-        const targetRotationY = -mouse.x * maxRotationY;
-
-        const lerpFactor = 0.05;
-        textMesh.rotation.x += (targetRotationX - textMesh.rotation.x) * lerpFactor;
-        textMesh.rotation.y += (targetRotationY - textMesh.rotation.y) * lerpFactor;
-    }
-
-    renderer.render(scene.getScene(), camera);
-}
+	requestAnimationFrame(animate);
+	animateBubbles(bubbles);
+	controls.update();
+	updateGradientBackground(Date.now(), scene);
+	renderer.render(scene.getScene(), camera);
+};
 
 animate();
 

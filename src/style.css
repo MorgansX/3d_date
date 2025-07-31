@@ -1,5 +1,13 @@
-body{
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+canvas.app {
+	display: block;
+	background: linear-gradient(180deg, #87ceeb 0%, #98fb98 50%, #ffb6c1 100%);
+	/* Or try: */
+	/* background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%); */
+	/* background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%); */
 }

@@ -1,20 +1,22 @@
 {
-  "name": "3d-date",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "~5.8.3",
-    "vite": "^7.0.4"
-  },
-  "dependencies": {
-    "@types/three": "^0.178.1",
-    "moment": "^2.30.1",
-    "three": "^0.178.0"
-  }
+	"name": "3d-date",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"format": "npx @biomejs/biome format --write"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.1.3",
+		"typescript": "~5.8.3",
+		"vite": "^7.0.4"
+	},
+	"dependencies": {
+		"@types/three": "^0.178.1",
+		"moment": "^2.30.1",
+		"three": "^0.178.0"
+	}
 }
